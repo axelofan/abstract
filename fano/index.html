@@ -1,0 +1,1140 @@
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Задание 4 ЕГЭ. Неравномерное кодирование и условие Фано — конспект занятия</title>
+<style>
+  :root{
+    --ink:#1a202c;--muted:#4a5568;--line:#e2e8f0;
+    --blue:#2b4c7e;--blue-d:#1f3557;--blue-l:#e8eef7;
+    --teal:#2c7a7b;--teal-l:#e6fffa;
+    --green:#2f855a;--green-l:#f0fff4;
+    --orange:#dd6b20;--orange-l:#fffaf0;
+    --red:#c53030;--red-l:#fff5f5;
+    --purple:#6b46c1;--purple-l:#faf5ff;
+    --bg:#f6f8fb;--card:#fff;--radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;font-size:16px}
+  h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em}
+  h2{font-size:1.7rem;color:var(--blue-d)}
+  h3{font-size:1.3rem;color:var(--blue);margin-top:1.6em;padding-left:12px;border-left:4px solid var(--teal)}
+  h4{font-size:1.08rem;color:var(--blue-d);margin-top:1.3em}
+  p{margin:.6em 0}
+  ul,ol{padding-left:1.4em}
+  li{margin:.25em 0}
+  code{font-family:Consolas,"Courier New",monospace;background:#edf2f7;padding:.1em .4em;border-radius:5px;font-size:.95em}
+  .bits{font-family:Consolas,"Courier New",monospace;letter-spacing:.08em;font-weight:700}
+  .hero{background:linear-gradient(135deg,var(--blue-d) 0%,var(--blue) 55%,var(--teal) 100%);color:#fff;padding:52px 20px 44px}
+  .hero .wrap{max-width:1080px;margin:0 auto}
+  .hero .tag{display:inline-block;background:rgba(255,255,255,.18);padding:4px 12px;border-radius:999px;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase}
+  .hero h1{font-size:2.2rem;margin:14px 0 10px}
+  .hero p{font-size:1.08rem;opacity:.95;max-width:800px}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .legend span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:6px 12px;border-radius:10px;font-size:.9rem}
+  nav.toc{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+  nav.toc .wrap{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;gap:4px;padding:8px 14px}
+  nav.toc a{text-decoration:none;color:var(--blue-d);padding:7px 12px;border-radius:8px;font-size:.9rem;font-weight:600}
+  nav.toc a:hover{background:var(--blue-l)}
+  main{max-width:1080px;margin:0 auto;padding:10px 20px 60px}
+  section.block{background:var(--card);border-radius:var(--radius);padding:30px 34px;margin:30px 0;box-shadow:0 4px 24px rgba(30,50,90,.07);border:1px solid var(--line)}
+  .block-num{display:inline-block;color:var(--teal);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.82rem;margin-bottom:6px}
+  .lead{font-size:1.08rem;color:var(--muted)}
+  /* callouts */
+  .box{border-radius:12px;padding:16px 20px;margin:18px 0;border-left:5px solid}
+  .box.idea{background:var(--teal-l);border-color:var(--teal)}
+  .box.rule{background:var(--blue-l);border-color:var(--blue)}
+  .box.warn{background:var(--orange-l);border-color:var(--orange)}
+  .box.bad{background:var(--red-l);border-color:var(--red)}
+  .box.good{background:var(--green-l);border-color:var(--green)}
+  .box.note{background:var(--purple-l);border-color:var(--purple)}
+  .box .ttl{font-weight:700;margin-bottom:4px;display:flex;gap:8px;align-items:center}
+  /* tables */
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.95rem;background:#fff}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:center}
+  th{background:var(--blue-l);color:var(--blue-d)}
+  tr:nth-child(even) td{background:#fafbfd}
+  td.l,th.l{text-align:left}
+  .tot td{font-weight:700;background:var(--teal-l)!important}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:760px){.two,.three{grid-template-columns:1fr}section.block{padding:20px 16px}}
+  /* infographic cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:18px 0}
+  .card{border-radius:12px;padding:16px;border:1px solid var(--line);background:#fff;position:relative}
+  .card .ico{font-size:1.7rem;margin-bottom:6px}
+  .card b{display:block;margin-bottom:4px;color:var(--blue-d)}
+  .card.c1{background:var(--blue-l)}.card.c2{background:var(--teal-l)}.card.c3{background:var(--green-l)}.card.c4{background:var(--orange-l)}.card.c5{background:var(--purple-l)}
+  .steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
+  .steps div{counter-increment:s;background:#fff;border:2px solid var(--blue-l);border-radius:12px;padding:14px 14px 14px 52px;position:relative}
+  .steps div::before{content:counter(s);position:absolute;left:12px;top:12px;width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .steps b{color:var(--blue-d)}
+  /* bars */
+  .bars{margin:14px 0}
+  .bar{display:grid;grid-template-columns:110px 1fr 70px;align-items:center;gap:10px;margin:5px 0;font-size:.93rem}
+  .bar .fill{height:22px;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--teal))}
+  .bar .fill.bad{background:linear-gradient(90deg,var(--red),#e53e3e)}
+  .bar .fill.good{background:linear-gradient(90deg,var(--green),#48bb78)}
+  .bar .fill.mid{background:linear-gradient(90deg,var(--orange),#ed8936)}
+  .bar .n{text-align:right;font-weight:700}
+  .big{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0}
+  .big div{flex:1;min-width:160px;border-radius:12px;padding:14px;text-align:center;border:1px solid var(--line)}
+  .big .v{font-size:1.9rem;font-weight:800}
+  .big .eq .v{color:var(--muted)}.big .ne .v{color:var(--teal)}.big .sv .v{color:var(--green)}
+  /* trees */
+  .tree{overflow-x:auto;text-align:center;padding:10px;background:#fbfcfe;border:1px dashed #cbd5e1;border-radius:12px;margin:12px 0}
+  .tree-cap{font-size:.9rem;color:var(--muted);text-align:center;margin-top:-4px}
+  .tlegend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);justify-content:center;margin:4px 0 10px}
+  .tlegend i{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:4px}
+  /* questions */
+  .qs{background:#fffdf5;border:1px solid #f6e3a3;border-radius:12px;padding:18px 20px;margin-top:24px}
+  .qs h4{margin-top:0;color:#8a6d00}
+  .q{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px dashed #efd98a}
+  .q:first-of-type{border-top:none}
+  .q p{margin:0;flex:1}
+  .btn{background:var(--blue);color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;font-size:.9rem;white-space:nowrap}
+  .btn:hover{background:var(--blue-d)}
+  .btn.sec{background:var(--teal)}
+  .hidden{display:none}
+  /* modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .modal-bg.open{display:flex}
+  .modal{background:#fff;border-radius:16px;max-width:680px;width:100%;max-height:85vh;overflow:auto;padding:26px 28px;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative;animation:pop .18s ease-out}
+  @keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal h4{margin-top:0;color:var(--teal)}
+  .modal .x{position:absolute;top:10px;right:14px;border:none;background:none;font-size:1.6rem;cursor:pointer;color:var(--muted)}
+  /* task */
+  .task{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:18px 0;background:#fff}
+  .task .tn{display:inline-block;background:var(--purple);color:#fff;border-radius:6px;padding:2px 10px;font-size:.8rem;font-weight:700;margin-bottom:8px}
+  .task .cond{background:var(--purple-l);border-radius:8px;padding:10px 14px;margin:6px 0 10px}
+  .ans{font-weight:800;color:var(--green)}
+  textarea{width:100%;min-height:120px;font-family:Consolas,monospace;font-size:1rem;border:1px solid #cbd5e1;border-radius:8px;padding:10px}
+  .res{margin-top:10px;padding:12px 14px;border-radius:8px;font-weight:600}
+  .res.ok{background:var(--green-l);color:var(--green)}.res.no{background:var(--red-l);color:var(--red)}
+  footer{text-align:center;color:var(--muted);font-size:.9rem;padding:20px}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.8rem;font-weight:700}
+  .pill.g{background:var(--green-l);color:var(--green)}.pill.r{background:var(--red-l);color:var(--red)}.pill.o{background:var(--orange-l);color:var(--orange)}
+  details.spoiler, details.task{border:1px solid var(--line);border-radius:12px;background:#fff;margin:18px 0;padding:0 20px}
+details.spoiler summary, details.task summary{cursor:pointer;padding:14px 0;font-weight:700;color:var(--blue);font-size:1.15rem;list-style:none;display:flex;align-items:center;gap:10px}
+details summary::-webkit-details-marker{display:none}
+details.spoiler summary::before, details.task summary::before{content:"▶";font-size:.8em;color:var(--teal);transition:transform .2s}
+details[open] summary::before{transform:rotate(90deg)}
+details[open] summary{border-bottom:1px dashed var(--line);margin-bottom:10px}
+details.spoiler > *:last-child, details.task > *:last-child{padding-bottom:16px}
+
+
+</style>
+<script>
+/* ===== Конспект «Условие Фано»: кодовые деревья, всплывающие ответы, тренажёр ===== */
+(function () {
+  'use strict';
+
+  /* ---------- Построение дерева кодов ---------- */
+  function buildTrie(codes) {
+    var root = { ch: {}, label: '', code: '', free: false };
+    codes.forEach(function (pair) {
+      var letter = String(pair[0]), code = String(pair[1]);
+      var n = root;
+      for (var i = 0; i < code.length; i++) {
+        var b = code.charAt(i);
+        if (b !== '0' && b !== '1') continue;
+        if (!n.ch[b]) n.ch[b] = { ch: {}, label: '', code: n.code + b, free: false };
+        n = n.ch[b];
+      }
+      n.label = n.label ? n.label + ',' + letter : letter;
+    });
+    return root;
+  }
+
+  /* добавляем «свободные» листья там, где у узла есть только одна ветвь */
+  function addFree(n) {
+    var has0 = !!n.ch['0'], has1 = !!n.ch['1'];
+    if (has0 || has1) {
+      if (!has0) n.ch['0'] = { ch: {}, label: '', code: n.code + '0', free: true };
+      if (!has1) n.ch['1'] = { ch: {}, label: '', code: n.code + '1', free: true };
+    }
+    ['0', '1'].forEach(function (b) {
+      if (n.ch[b] && !n.ch[b].free) addFree(n.ch[b]);
+    });
+  }
+
+  function layout(n, d, st) {
+    n.d = d;
+    if (d > st.maxD) st.maxD = d;
+    var ks = ['0', '1'].filter(function (b) { return n.ch[b]; });
+    if (!ks.length) { n.x = st.leaf++; return; }
+    ks.forEach(function (b) { layout(n.ch[b], d + 1, st); });
+    var sum = 0;
+    ks.forEach(function (b) { sum += n.ch[b].x; });
+    n.x = sum / ks.length;
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function parseAttr(el, name, def) {
+    var v = el.getAttribute(name);
+    if (!v) return def;
+    try { return JSON.parse(v); } catch (e) { return def; }
+  }
+
+  function renderTree(el) {
+    var codes;
+    try {
+      codes = JSON.parse(el.getAttribute('data-codes') || '[]');
+    } catch (e) {
+      el.innerHTML = '<p style="color:#c53030">Ошибка в атрибуте data-codes: ' + esc(e.message) + '</p>';
+      return;
+    }
+    if (!codes.length) { el.innerHTML = '<p style="color:#718096">Нет кодов для построения дерева</p>'; return; }
+
+    var newL = parseAttr(el, 'data-new', []);
+    var badL = parseAttr(el, 'data-bad', []);
+
+    var root = buildTrie(codes);
+    addFree(root);
+    var st = { leaf: 0, maxD: 0 };
+    layout(root, 0, st);
+
+    var gap = 64, lh = 64, pad = 34;
+    var W = Math.max(st.leaf - 1, 0) * gap + pad * 2;
+    var H = st.maxD * lh + pad * 2;
+    var X = function (n) { return pad + n.x * gap; };
+    var Y = function (n) { return pad + n.d * lh; };
+
+    var s = '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H +
+            '" viewBox="0 0 ' + W + ' ' + H + '" font-family="Segoe UI,Arial,sans-serif" font-size="14">';
+
+    /* рёбра */
+    (function drawEdges(n) {
+      ['0', '1'].forEach(function (b) {
+        var c = n.ch[b];
+        if (!c) return;
+        s += '<line x1="' + X(n) + '" y1="' + Y(n) + '" x2="' + X(c) + '" y2="' + Y(c) + '" stroke="' +
+             (c.free ? '#a0aec0' : '#2b4c7e') + '" stroke-width="2"' + (c.free ? ' stroke-dasharray="5,4"' : '') + '/>';
+        s += '<text x="' + ((X(n) + X(c)) / 2 + (b === '0' ? -9 : 9)) + '" y="' + ((Y(n) + Y(c)) / 2 - 2) +
+             '" text-anchor="middle" fill="#718096" font-weight="700">' + b + '</text>';
+        drawEdges(c);
+      });
+    })(root);
+
+    /* узлы */
+    (function drawNodes(n) {
+      var isLeaf = !n.ch['0'] && !n.ch['1'];
+      var labels = n.label ? n.label.split(',') : [];
+      var isBad = labels.some(function (x) { return badL.indexOf(x) !== -1; });
+      var isNew = labels.some(function (x) { return newL.indexOf(x) !== -1; });
+      var fill = '#fff', stroke = '#2b4c7e', txt = '#1a202c';
+
+      if (n.free) { fill = '#f7fafc'; stroke = '#a0aec0'; }
+      else if (isBad || (n.label && !isLeaf)) { fill = '#fff5f5'; stroke = '#c53030'; txt = '#c53030'; }
+      else if (isNew) { fill = '#f0fff4'; stroke = '#2f855a'; txt = '#2f855a'; }
+      else if (n.label) { fill = '#e8eef7'; }
+
+      var r = n.label ? 17 : (n.free ? 14 : 6);
+      s += '<circle cx="' + X(n) + '" cy="' + Y(n) + '" r="' + r + '" fill="' + fill + '" stroke="' + stroke +
+           '" stroke-width="2"' + (n.free ? ' stroke-dasharray="4,3"' : '') + '/>';
+
+      if (n.label) {
+        s += '<text x="' + X(n) + '" y="' + (Y(n) + 5) + '" text-anchor="middle" fill="' + txt +
+             '" font-weight="800" font-size="15">' + esc(n.label) + '</text>';
+      }
+      if (n.free) {
+        s += '<text x="' + X(n) + '" y="' + (Y(n) + 5) + '" text-anchor="middle" fill="#718096" font-weight="700">?</text>';
+      }
+      if (n.free || (n.label && isLeaf)) {
+        s += '<text x="' + X(n) + '" y="' + (Y(n) + 30) + '" text-anchor="middle" fill="#718096" font-size="11" ' +
+             'font-family="Consolas,monospace">' + n.code + '</text>';
+      }
+      ['0', '1'].forEach(function (b) { if (n.ch[b]) drawNodes(n.ch[b]); });
+    })(root);
+
+    s += '</svg>';
+
+    var legend = '<div class="tlegend">' +
+      '<span><i style="background:#e8eef7;border:2px solid #2b4c7e"></i>буква</span>' +
+      '<span><i style="background:#f0fff4;border:2px solid #2f855a"></i>новая буква</span>' +
+      '<span><i style="background:#fff5f5;border:2px solid #c53030"></i>нарушение</span>' +
+      '<span><i style="background:#f7fafc;border:2px dashed #a0aec0"></i>свободный префикс</span></div>';
+    el.innerHTML = legend + s;
+  }
+
+  /* ---------- Всплывающие окна ---------- */
+  function initModal() {
+    var bg = document.getElementById('modalBg');
+    var body = document.getElementById('modalBody');
+    var x = document.getElementById('modalX');
+    if (!bg || !body) return;
+
+    function close() { bg.classList.remove('open'); }
+
+    var buttons = document.querySelectorAll('[data-answer]');
+    Array.prototype.forEach.call(buttons, function (b) {
+      b.addEventListener('click', function () {
+        var src = document.getElementById(b.getAttribute('data-answer'));
+        if (!src) { body.innerHTML = '<p>Ответ не найден (id=' + esc(b.getAttribute('data-answer')) + ')</p>'; }
+        else { body.innerHTML = src.innerHTML; }
+        bg.classList.add('open');
+      });
+    });
+    if (x) x.addEventListener('click', close);
+    bg.addEventListener('click', function (e) { if (e.target === bg) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  }
+
+  /* ---------- Мини-тренажёр ---------- */
+  function parseCodes(text) {
+    var out = [], errs = [];
+    text.split('\n').forEach(function (line, i) {
+      line = line.trim();
+      if (!line) return;
+      var m = line.match(/^(\S+?)\s*[=:\-—]?\s*([01]+)$/);
+      if (!m) { errs.push('Строка ' + (i + 1) + ': ожидается «Буква код», код — только из 0 и 1'); return; }
+      out.push([m[1], m[2]]);
+    });
+    return { out: out, errs: errs };
+  }
+
+  function checkFano(codes) {
+    var direct = [], rev = [], bad = {};
+    for (var i = 0; i < codes.length; i++) {
+      for (var j = 0; j < codes.length; j++) {
+        if (i === j) continue;
+        var la = codes[i][0], a = codes[i][1], lb = codes[j][0], b = codes[j][1];
+        if (a === b) {
+          if (i < j) {
+            var msg = la + ' и ' + lb + ' имеют одинаковый код «' + a + '»';
+            direct.push(msg); rev.push(msg); bad[lb] = 1;
+          }
+          continue;
+        }
+        if (b.indexOf(a) === 0) { direct.push('«' + a + '» (' + la + ') — начало «' + b + '» (' + lb + ')'); bad[lb] = 1; }
+        if (b.length > a.length && b.slice(-a.length) === a) { rev.push('«' + a + '» (' + la + ') — окончание «' + b + '» (' + lb + ')'); }
+      }
+    }
+    return { direct: direct, rev: rev, bad: Object.keys(bad) };
+  }
+
+  function uniq(arr) { var seen = {}; return arr.filter(function (x) { if (seen[x]) return false; seen[x] = 1; return true; }); }
+
+  function initTrainer() {
+    var btn = document.getElementById('trBtn');
+    var sample = document.getElementById('trSample');
+    var input = document.getElementById('trInput');
+    var res = document.getElementById('trRes');
+    var tree = document.getElementById('trTree');
+    if (!btn || !input || !res || !tree) return;
+
+    btn.addEventListener('click', function () {
+      var parsed = parseCodes(input.value);
+      if (parsed.errs.length || !parsed.out.length) {
+        res.innerHTML = '<div class="res no">' + (parsed.errs.join('<br>') || 'Введите хотя бы один код') + '</div>';
+        tree.style.display = 'none';
+        return;
+      }
+      var r = checkFano(parsed.out);
+      var html = '';
+      html += r.direct.length
+        ? '<div class="res no">❌ Прямое условие Фано нарушено:<br>' + uniq(r.direct).join('<br>') + '</div>'
+        : '<div class="res ok">✅ Прямое условие Фано выполняется — сообщение читается слева направо</div>';
+      html += r.rev.length
+        ? '<div class="res no">❌ Обратное условие Фано нарушено:<br>' + uniq(r.rev).join('<br>') + '</div>'
+        : '<div class="res ok">✅ Обратное условие Фано выполняется — сообщение читается справа налево</div>';
+      if (!r.direct.length && !r.rev.length) html += '<div class="res ok">🏆 Код однозначно декодируется в обе стороны</div>';
+      if (r.direct.length && r.rev.length) html += '<div class="res no">⚠️ Нарушены оба условия — такой код, скорее всего, декодируется неоднозначно</div>';
+      var sum = 0;
+      parsed.out.forEach(function (c) { sum += c[1].length; });
+      html += '<p>Количество кодовых слов: <b>' + parsed.out.length + '</b>, сумма длин: <b>' + sum +
+              '</b>, средняя длина: <b>' + (sum / parsed.out.length).toFixed(2) + '</b></p>';
+      res.innerHTML = html;
+
+      tree.setAttribute('data-codes', JSON.stringify(parsed.out));
+      tree.setAttribute('data-bad', JSON.stringify(r.bad));
+      tree.setAttribute('data-new', '[]');
+      tree.style.display = '';
+      renderTree(tree);
+    });
+
+    if (sample) {
+      sample.addEventListener('click', function () {
+        input.value = 'А 00\nБ 100\nВ 101\nГ 11\nД 1000';
+        btn.click();
+      });
+    }
+  }
+
+  /* ---------- Запуск ---------- */
+  function init() {
+    var trees = document.querySelectorAll('.tree[data-codes]');
+    Array.prototype.forEach.call(trees, function (el) {
+      try { renderTree(el); }
+      catch (e) { el.innerHTML = '<p style="color:#c53030">Не удалось построить дерево: ' + esc(e.message) + '</p>'; }
+    });
+    initModal();
+    initTrainer();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</head>
+<body>
+
+<header class="hero"><div class="wrap">
+  <span class="tag">ЕГЭ по информатике · Задание 4</span>
+  <h1>Неравномерное кодирование и условие Фано</h1>
+  <p>Конспект занятия: от идеи «частое — коротко, редкое — длинно» до уверенного решения типовых задач ЕГЭ с помощью кодового дерева.</p>
+  <div class="legend">
+    <span>🧠 6 информационных блоков</span><span>🌳 Кодовые деревья</span><span>📊 Инфографика</span><span>💬 Всплывающие ответы</span><span>🎯 Разбор типовых задач</span><span>🧪 Мини-тренажёр</span>
+  </div>
+</div></header>
+
+<nav class="toc"><div class="wrap">
+  <a href="#b1">1. Введение</a><a href="#b2">2. Однозначное декодирование</a><a href="#b3">3. Кодовое дерево</a><a href="#b4">4. Задачи ЕГЭ</a><a href="#b5">5. Эффективность деревьев</a><a href="#b6">6. Шпаргалка и тренажёр</a>
+</div></nav>
+
+<main>
+
+<!-- ================= БЛОК 1 ================= -->
+<section class="block" id="b1">
+  <span class="block-num">Блок №1</span>
+  <h2>Введение. Зачем нужны коды разной длины</h2>
+  <p class="lead">Раньше мы кодировали все буквы кодами одинаковой длины — например, каждая буква занимала 5, 6 или 8 бит. Но что, если разрешить кодам быть разной длины: одним буквам — короткий код, другим — длинный? Зачем это может быть удобно?</p>
+  <p>Буквы встречаются в тексте по-разному: «о», «е», «а» — очень часто, а «ъ» или «ё» — редко.</p>
+  <aside style="background:#fff8e1;border-left:5px solid #f5b400;padding:12px 16px;border-radius:8px;">
+  💡 <b>Идея:</b> часто встречающимся буквам дадим короткий код, а редким — длинный. Тогда весь текст в среднем «сожмётся» и станет короче.
+</aside>
+
+  <div class="cards">
+    <div class="card c1"><div class="ico">📏</div><b>Равномерный код</b>Все символы имеют одинаковую длину кода. Просто, но неэкономно: редкая «ъ» занимает столько же, сколько частая «о».</div>
+    <div class="card c2"><div class="ico">📐</div><b>Неравномерный код</b>Длина кода зависит от частоты символа. Частые — короче, редкие — длиннее. Текст в целом становится компактнее.</div>
+    <div class="card c3"><div class="ico">🗜️</div><b>Где используется</b>Архиваторы (ZIP, RAR), сжатие JPEG/MP3, азбука Морзе — везде, где важно экономить биты.</div>
+    <div class="card c4"><div class="ico">⚠️</div><b>Подводный камень</b>Коды разной длины надо подбирать аккуратно, иначе сообщение нельзя будет однозначно расшифровать. Об этом — блок 2.</div>
+  </div>
+<details class="spoiler">
+  <summary>Пример 1. Фраза «СОРОКА КАРКАЛА ОКОЛО СОРОКА РАЗ»</summary>
+  <p>В тексте — буквы одного регистра и пробел: 7 разных букв (С, О, Р, К, А, Л, З) и 1 пробел. Всего 8 символов алфавита. При равномерном кодировании на каждый символ понадобилось бы:</p>
+  <ul>
+    <li>2 бита дают только 4 варианта (00, 01, 10, 11) — не хватает;</li>
+    <li>3 бита дают 8 вариантов — как раз!</li>
+  </ul>
+  <p>Разбиваем фразу на символы:<br><span class="bits">С О Р О К А ␣ К А Р К А Л А ␣ О К О Л О ␣ С О Р О К А ␣ Р А З</span><br>Всего символов — <b>31</b>. Размер сообщения при равномерном коде = 31 × 3 = <b>93 бита</b>.</p>
+
+  <div class="two">
+    <div>
+      <h4>Равномерный код (3 бита)</h4>
+      <table><tr><th>Символ</th><th>Код</th></tr>
+        <tr><td>О</td><td class="bits">000</td></tr><tr><td>А</td><td class="bits">001</td></tr><tr><td>К</td><td class="bits">010</td></tr><tr><td>пробел</td><td class="bits">011</td></tr><tr><td>Р</td><td class="bits">100</td></tr><tr><td>Л</td><td class="bits">101</td></tr><tr><td>С</td><td class="bits">110</td></tr><tr><td>З</td><td class="bits">111</td></tr>
+      </table>
+    </div>
+    <div>
+      <h4>Частоты символов</h4>
+      <div class="bars">
+        <div class="bar"><span>О</span><div class="fill" style="width:100%"></div><span class="n">7</span></div>
+        <div class="bar"><span>А</span><div class="fill" style="width:86%"></div><span class="n">6</span></div>
+        <div class="bar"><span>К</span><div class="fill" style="width:71%"></div><span class="n">5</span></div>
+        <div class="bar"><span>Р</span><div class="fill" style="width:57%"></div><span class="n">4</span></div>
+        <div class="bar"><span>пробел</span><div class="fill" style="width:57%"></div><span class="n">4</span></div>
+        <div class="bar"><span>С</span><div class="fill" style="width:29%"></div><span class="n">2</span></div>
+        <div class="bar"><span>Л</span><div class="fill" style="width:29%"></div><span class="n">2</span></div>
+        <div class="bar"><span>З</span><div class="fill" style="width:14%"></div><span class="n">1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h4>Неравномерный код: раздаём коды разной длины</h4>
+  <table>
+    <tr><th>Символ</th><th>Частота</th><th>Код</th><th>Длина кода</th><th>Частота × длина</th><th>Итого, бит</th></tr>
+    <tr><td>О</td><td>7</td><td class="bits">00</td><td>2</td><td>7 × 2</td><td>14</td></tr>
+    <tr><td>А</td><td>6</td><td class="bits">01</td><td>2</td><td>6 × 2</td><td>12</td></tr>
+    <tr><td>К</td><td>5</td><td class="bits">100</td><td>3</td><td>5 × 3</td><td>15</td></tr>
+    <tr><td>Р</td><td>4</td><td class="bits">101</td><td>3</td><td>4 × 3</td><td>12</td></tr>
+    <tr><td>пробел</td><td>4</td><td class="bits">110</td><td>3</td><td>4 × 3</td><td>12</td></tr>
+    <tr><td>С</td><td>2</td><td class="bits">1110</td><td>4</td><td>2 × 4</td><td>8</td></tr>
+    <tr><td>Л</td><td>2</td><td class="bits">11110</td><td>5</td><td>2 × 5</td><td>10</td></tr>
+    <tr><td>З</td><td>1</td><td class="bits">11111</td><td>5</td><td>1 × 5</td><td>5</td></tr>
+    <tr class="tot"><td colspan="5">Итого</td><td>88</td></tr>
+  </table>
+  <div class="tree" data-codes='[["О","00"],["А","01"],["К","100"],["Р","101"],["␣","110"],["С","1110"],["Л","11110"],["З","11111"]]'></div>
+  <p class="tree-cap">Кодовое дерево неравномерного кода из примера 1: частые буквы «висят» ближе к корню</p>
+
+  <div class="big">
+    <div class="eq"><div class="v">93</div>бит — равномерный код</div>
+    <div class="ne"><div class="v">88</div>бит — неравномерный код</div>
+    <div class="sv"><div class="v">−5</div>бит экономии (≈5 %)</div>
+  </div>
+  <div class="box idea"><div class="ttl">💡 Обратите внимание</div>Даже пробел получил довольно короткий код (<span class="bits">110</span>, всего 3 бита), потому что он встречается не так уж редко — целых 4 раза! А самая редкая буква З (1 раз) получила самый длинный код. На короткой фразе выигрыш невелик, но с ростом текста он растёт пропорционально.</div>
+</details>
+<details class="spoiler">
+  <summary>Пример 2. Текст с пунктуацией (44 символа алфавита)</summary>
+  <p>Предположим, нужно закодировать русский текст (буквы одного регистра) с пробелами и основными знаками пунктуации: 33 буквы, 1 пробел и 10 знаков — всего <b>44 символа</b>. При равномерном кодировании понадобилось бы 6 бит на символ (2<sup>5</sup> = 32 &lt; 44 ≤ 64 = 2<sup>6</sup>).</p>
+  <p>Однако можно использовать неравномерный код, построенный по частотам букв в русском языке:</p>
+  <div class="two">
+    <table>
+      <tr><th>Символ</th><th>Код</th><th>Длина</th></tr>
+      <tr><td>пробел</td><td class="bits">000</td><td>3</td></tr><tr><td>о</td><td class="bits">111</td><td>3</td></tr>
+      <tr><td>е</td><td class="bits">0100</td><td>4</td></tr><tr><td>а</td><td class="bits">0110</td><td>4</td></tr><tr><td>и</td><td class="bits">0111</td><td>4</td></tr><tr><td>т</td><td class="bits">1001</td><td>4</td></tr><tr><td>н</td><td class="bits">1010</td><td>4</td></tr><tr><td>с</td><td class="bits">1101</td><td>4</td></tr>
+      <tr><td>р</td><td class="bits">00101</td><td>5</td></tr><tr><td>в</td><td class="bits">00111</td><td>5</td></tr><tr><td>л</td><td class="bits">01010</td><td>5</td></tr><tr><td>к</td><td class="bits">10001</td><td>5</td></tr><tr><td>м</td><td class="bits">10111</td><td>5</td></tr><tr><td>д</td><td class="bits">11000</td><td>5</td></tr>
+      <tr><td>п</td><td class="bits">001000</td><td>6</td></tr><tr><td>у</td><td class="bits">001001</td><td>6</td></tr><tr><td>я</td><td class="bits">001101</td><td>6</td></tr><tr><td>ы</td><td class="bits">010110</td><td>6</td></tr><tr><td>з</td><td class="bits">010111</td><td>6</td></tr><tr><td>,</td><td class="bits">100001</td><td>6</td></tr><tr><td>ь</td><td class="bits">100010</td><td>6</td></tr>
+    </table>
+    <table>
+      <tr><th>Символ</th><th>Код</th><th>Длина</th></tr>
+      <tr><td>х</td><td class="bits">1011000</td><td>7</td></tr><tr><td>б</td><td class="bits">1011001</td><td>7</td></tr><tr><td>г</td><td class="bits">1011010</td><td>7</td></tr><tr><td>ч</td><td class="bits">1011011</td><td>7</td></tr><tr><td>й</td><td class="bits">1100110</td><td>7</td></tr><tr><td>.</td><td class="bits">1100111</td><td>7</td></tr>
+      <tr><td>ъ</td><td class="bits">00110010</td><td>8</td></tr><tr><td>ж</td><td class="bits">00110011</td><td>8</td></tr><tr><td>ю</td><td class="bits">10000000</td><td>8</td></tr><tr><td>ш</td><td class="bits">10000001</td><td>8</td></tr><tr><td>ц</td><td class="bits">10000010</td><td>8</td></tr><tr><td>щ</td><td class="bits">10000011</td><td>8</td></tr><tr><td>э</td><td class="bits">11001010</td><td>8</td></tr><tr><td>ф</td><td class="bits">11001011</td><td>8</td></tr><tr><td>ё</td><td class="bits">00110000</td><td>8</td></tr><tr><td>:</td><td class="bits">00110001</td><td>8</td></tr>
+      <tr><td>-</td><td class="bits">110010000</td><td>9</td></tr><tr><td>!</td><td class="bits">110010001</td><td>9</td></tr><tr><td>?</td><td class="bits">110011010</td><td>9</td></tr><tr><td>;</td><td class="bits">110010011</td><td>9</td></tr><tr><td>(</td><td class="bits">001100010</td><td>9</td></tr><tr><td>)</td><td class="bits">001100011</td><td>9</td></tr>
+    </table>
+  </div>
+  <p>Подсчитаем объём сообщения при двух способах кодирования:</p>
+  <div class="box note" style="font-style:italic">«алгоритмом называется предписание исполнителю выполнить точно определённую последовательность действий, направленных на достижение заданной цели или решение поставленной задачи. от любых предписаний, т.е. текстов, побуждающих к действию, алгоритм отличается рядом свойств, допускающих его автоматическое исполнение, а именно: понятность, дискретность, точность, результативность и массовость.»</div>
+  <table>
+    <tr><th>Символ</th><th>Кол-во</th><th>Равномерный (×7)</th><th>Длина нер. кода</th><th>Неравномерный</th><th>Символ</th><th>Кол-во</th><th>Равномерный (×7)</th><th>Длина нер. кода</th><th>Неравномерный</th></tr>
+    <tr><td>пробел</td><td>40</td><td>280</td><td>3</td><td>120</td><td>й</td><td>7</td><td>49</td><td>7</td><td>49</td></tr>
+    <tr><td>о</td><td>35</td><td>245</td><td>3</td><td>105</td><td>ю</td><td>6</td><td>42</td><td>8</td><td>48</td></tr>
+    <tr><td>т</td><td>31</td><td>217</td><td>4</td><td>124</td><td>ч</td><td>5</td><td>35</td><td>7</td><td>35</td></tr>
+    <tr><td>е</td><td>30</td><td>210</td><td>4</td><td>120</td><td>к</td><td>5</td><td>35</td><td>5</td><td>25</td></tr>
+    <tr><td>и</td><td>28</td><td>196</td><td>4</td><td>112</td><td>з</td><td>4</td><td>28</td><td>6</td><td>24</td></tr>
+    <tr><td>н</td><td>28</td><td>196</td><td>4</td><td>112</td><td>ы</td><td>4</td><td>28</td><td>6</td><td>24</td></tr>
+    <tr><td>с</td><td>25</td><td>175</td><td>4</td><td>100</td><td>я</td><td>4</td><td>28</td><td>6</td><td>24</td></tr>
+    <tr><td>а</td><td>23</td><td>161</td><td>4</td><td>92</td><td>у</td><td>4</td><td>28</td><td>6</td><td>24</td></tr>
+    <tr><td>л</td><td>16</td><td>112</td><td>5</td><td>80</td><td>х</td><td>4</td><td>28</td><td>7</td><td>28</td></tr>
+    <tr><td>п</td><td>14</td><td>98</td><td>6</td><td>84</td><td>.</td><td>4</td><td>28</td><td>7</td><td>28</td></tr>
+    <tr><td>в</td><td>13</td><td>91</td><td>5</td><td>65</td><td>г</td><td>3</td><td>21</td><td>7</td><td>21</td></tr>
+    <tr><td>д</td><td>13</td><td>91</td><td>5</td><td>65</td><td>ж</td><td>2</td><td>14</td><td>8</td><td>16</td></tr>
+    <tr><td>р</td><td>10</td><td>70</td><td>5</td><td>50</td><td>б</td><td>2</td><td>14</td><td>7</td><td>14</td></tr>
+    <tr><td>ь</td><td>9</td><td>63</td><td>6</td><td>54</td><td>щ</td><td>2</td><td>14</td><td>8</td><td>16</td></tr>
+    <tr><td>,</td><td>9</td><td>63</td><td>6</td><td>54</td><td>ё</td><td>1</td><td>7</td><td>8</td><td>8</td></tr>
+    <tr><td>м</td><td>7</td><td>49</td><td>5</td><td>35</td><td>ц, ш, :</td><td>1+1+1</td><td>21</td><td>8</td><td>24</td></tr>
+    <tr class="tot"><td colspan="3">Равномерный код: 2737 бит</td><td colspan="7">Неравномерный код: 1780 бит</td></tr>
+  </table>
+  <div class="bars">
+    <div class="bar"><span>Равномерный</span><div class="fill bad" style="width:100%"></div><span class="n">2737</span></div>
+    <div class="bar"><span>Неравномерный</span><div class="fill good" style="width:65%"></div><span class="n">1780</span></div>
+  </div>
+  <div class="box idea"><div class="ttl">📌 Вывод</div>Выгода — примерно 1000 бит для небольшого текста длиной около 400 символов (≈35 %). Для конкретно этого сообщения можно было выбрать и лучший вариант распределения кодовых слов — например, коды букв «п» и «м» поменять местами. Но важно реализовать такой код, который <b>в среднем</b> давал бы выгоду на любом тексте.<br><small>В таблице равномерный код для наглядности взят 7-битным (как ASCII); при 6-битном равномерном коде получилось бы 391 × 6 = 2346 бит — неравномерный код всё равно выигрывает более 500 бит.</small></div>
+</details>
+  <p>Схожим алгоритмом работают программы-архиваторы (ZIP и похожие): часто встречающееся — коротким кодом, редкое — длинным, и файл становится меньше. Но есть важное условие: коды нужно придумывать аккуратно, иначе потом не получится правильно «расшифровать» сообщение обратно.</p>
+  <div class="qs">
+    <h4>❓ Вопросы на понимание</h4>
+    <div class="q"><p><b>1.</b> В чём заключается главная идея неравномерного кодирования, позволяющая уменьшить объём текста, и почему этот метод выгоднее равномерного кодирования для больших сообщений?</p><button class="btn" data-answer="a1-1">Ответ</button></div>
+    <div class="q"><p><b>2.</b> Представьте ситуацию: вы решили заархивировать файл, в котором все возможные символы (буквы, цифры, знаки препинания) встречаются абсолютно одинаковое количество раз. Сработает ли метод сжатия неравномерным кодированием и уменьшится ли размер файла? Обоснуйте свой ответ, опираясь на суть метода.</p><button class="btn" data-answer="a1-2">Ответ</button></div>
+  </div>
+  <div id="a1-1" class="hidden"><h4>Ответ на вопрос 1</h4><p>Главная идея — <b>подстроить длину кода под частоту символа</b>: самым частым символам дать самые короткие кодовые слова, редким — длинные. Тогда «средняя длина кода на символ» становится меньше, чем фиксированная длина равномерного кода.</p><p>Для больших сообщений метод выгоднее, потому что экономия накапливается: если в среднем на символ уходит, например, 4,5 бита вместо 6, то на тексте из миллиона символов это 1,5 Мбит экономии. Кроме того, чем длиннее текст, тем точнее реальные частоты символов соответствуют тем, под которые строился код, и тем надёжнее работает сжатие.</p></div>
+  <div id="a1-2" class="hidden"><h4>Ответ на вопрос 2</h4><p><b>Нет, сжатия не будет</b> (а может стать даже хуже). Суть метода — выигрыш на частых символах компенсирует проигрыш на редких. Если все символы встречаются одинаково часто, то нет «частых» и «редких»: сколько бит мы сэкономим на коротких кодах, столько же потеряем на длинных. Оптимальным в этом случае оказывается именно равномерный код длиной ⌈log<sub>2</sub>N⌉ бит.</p><p>Пример: 4 символа по 10 раз. Равномерный код — 2 бита: 40 × 2 = 80 бит. Неравномерный код 0, 10, 110, 111: 10·1 + 10·2 + 10·3 + 10·3 = 90 бит — хуже!</p></div>
+</section>
+
+<!-- ================= БЛОК 2 ================= -->
+<section class="block" id="b2">
+  <span class="block-num">Блок №2</span>
+  <h2>Однозначное декодирование. Условие Фано</h2>
+  <p>Один из первых кодов с неодинаковой длиной кодовых слов — <b>азбука Морзе</b>: буквы кодируются точками и тире (точка — как 0, тире — как 1). Частые буквы — короткие («Е» — одна точка), редкие — длинные (до 6 знаков). Но между буквами при передаче делаются <b>паузы</b>. Если записать точки и тире подряд без пробелов — например, <span class="bits">•–••</span> — непонятно, как это расшифровать:</p>
+  <div class="three">
+    <div class="card c4"><b>•–•• → Л</b>одна буква</div>
+    <div class="card c4"><b>•– | •• → А И</b>две буквы</div>
+    <div class="card c4"><b>• | – | • | • → Е Т Е Е</b>четыре буквы</div>
+  </div>
+  <p>Не зная, где заканчивается один символ и начинается другой, сообщение можно понять по-разному. Это <b>проблема неоднозначного декодирования</b>. Чтобы её избежать, есть простое правило.</p>
+
+  <div class="box rule"><div class="ttl">📜 Условие Фано (прямое)</div><b>Никакое кодовое слово не должно быть началом (префиксом) другого кодового слова.</b><br>Если правило соблюдается, сообщение можно расшифровать однозначно, читая его <b>слева направо</b>: как только прочитанный фрагмент совпал с каким-то кодом — это и есть буква, продолжений у неё быть не может.</div>
+  <div class="box rule"><div class="ttl">📜 Обратное условие Фано</div><b>Никакое кодовое слово не должно быть окончанием (суффиксом) другого кодового слова.</b><br>Такой код тоже однозначно декодируется, но читать сообщение нужно <b>справа налево</b>. В задачах ЕГЭ встречаются оба варианта — внимательно читайте условие!</div>
+
+  <div class="cards">
+    <div class="card c3"><div class="ico">✅</div><b>Выполняется прямое условие</b>А = 00, Б = 100, В = 101. Ни один код не начинается с другого. Дешифруем слева направо без заглядывания вперёд.</div>
+    <div class="card c5"><div class="ico">🔁</div><b>Выполняется обратное условие</b>А = 0, Б = 01, В = 011. «0» — начало всех кодов (прямое нарушено), но ни один код не заканчивается другим. Дешифруем справа налево.</div>
+    <div class="card c4"><div class="ico">❌</div><b>Нарушены оба</b>А = 0, Б = 01, В = 10. «0» — начало Б и конец В. Сообщение 010 можно прочитать как АВ или как БА — путаница!</div>
+  </div>
+<details class="spoiler">
+  <summary>Условие Фано — достаточное, но не необходимое</summary>
+    <p>Существуют коды, которые <b>не</b> удовлетворяют условию Фано, но при этом декодируются однозначно. Представьте, что у нас всего три буквы:</p>
+  <div class="three">
+    <div class="card c1"><b>А = 0</b></div><div class="card c1"><b>Б = 01</b></div><div class="card c1"><b>В = 11</b></div>
+  </div>
+  <p>Код буквы А — <span class="bits">0</span>, а код буквы Б — <span class="bits">01</span>. Ноль — это начало кода Б: прямое условие Фано нарушено. Казалось бы, должна быть путаница. Проверим на сообщении <span class="bits">011</span>:</p>
+  <div class="two">
+    <div class="box good"><div class="ttl">Вариант 1: первая буква — А</div>Отделяем А (<span class="bits">0</span>). Остаётся хвост <span class="bits">11</span> — это буква В.<br><b>Итог: АВ. Всё сошлось!</b></div>
+    <div class="box bad"><div class="ttl">Вариант 2: первая буква — Б</div>Отделяем Б (<span class="bits">01</span>). Остаётся хвост <span class="bits">1</span>. Буквы с кодом «1» нет.<br><b>Итог: тупик, вариант невозможен.</b></div>
+  </div>
+  <div class="box idea"><div class="ttl">🔍 Почему так вышло</div>Этот код удовлетворяет <b>обратному</b> условию Фано: ни одно слово не является окончанием другого (0 — не конец 01 и 11; 01 — не конец 11). Поэтому сообщение читается однозначно <b>справа налево</b>: <span class="bits">011</span> → последние два бита «11» — это В, остался «0» — это А. Получаем АВ.</div>
+</details>
+<details class="spoiler">
+  <summary>Как «ломается» хороший код</summary>
+  <p>Пусть А = <span class="bits">00</span>, Б = <span class="bits">100</span>, В = <span class="bits">101</span>. Это правильный код: ни один код не является началом другого.</p>
+  <div class="two">
+    <div class="box good"><div class="ttl">✅ Добавляем Г = 11</div>Комбинация «11» не совпадает с началом ни одного кода и сама не начинается с чужого кода. Проблем нет.</div>
+    <div class="box bad"><div class="ttl">❌ Добавляем Д = 1000</div>Код буквы Б (<span class="bits">100</span>) — это начало кода Д. Последовательность <span class="bits">1000…</span> нельзя прочитать однозначно: это «Д» или «Б» + «0…»? Путаница!</div>
+  </div>
+  <div class="tree" data-codes='[["А","00"],["Б","100"],["В","101"],["Г","11"],["Д","1000"]]' data-bad='["Д"]'></div>
+  <p class="tree-cap">Буква Д «выросла» из листа Б — так делать нельзя. Красным отмечено нарушение.</p>
+</details>
+  <h3>Проверяем условие Фано вручную: алгоритм</h3>
+  <div class="steps">
+    <div><b>Отсортируйте</b> коды по длине — от коротких к длинным.</div>
+    <div><b>Для каждого короткого кода</b> посмотрите, начинается ли с него хоть один более длинный код.</div>
+    <div><b>Нашли совпадение</b> — прямое условие Фано нарушено. Для обратного условия сравнивайте окончания.</div>
+    <div><b>Совпадений нет</b> — код префиксный, декодируется однозначно слева направо.</div>
+  </div>
+
+  <div class="qs">
+    <h4>❓ Вопросы на понимание</h4>
+    <div class="q"><p><b>1.</b> Придумай кодовую таблицу из нескольких букв, которая не будет соответствовать условию Фано, но допускает однозначное декодирование. Покажи на конкретном сообщении. Только чур не брать её из конспекта!</p><button class="btn" data-answer="a2-1">Ответ</button></div>
+    <div class="q"><p><b>2.</b> Что необходимо сделать, если на текущем дереве почти все «листики» (концы веток) уже заняты существующими буквами, свободен только один листик, а по условию задачи нужно добавить сразу три новые буквы?</p><button class="btn" data-answer="a2-2">Ответ</button></div>
+  </div>
+  <div id="a2-1" class="hidden"><h4>Один из возможных ответов</h4><p>Возьмём код <b>К = 1, О = 10, Т = 100</b>. Прямое условие Фано нарушено: «1» — начало кодов «10» и «100», а «10» — начало «100». Но ни один код не является <b>окончанием</b> другого (окончания — «1», «0», «00»), то есть выполняется обратное условие Фано, и сообщение читается однозначно справа налево.</p><p>Сообщение <span class="bits">1001</span>: справа «1» — К, остаётся «100» — Т. Ответ: <b>ТК</b>. Проверим слева направо: «1» (К) + «001»? — такого кода нет; «10» (О) + «01»? — нет; «100» (Т) + «1» (К) — единственный вариант.</p></div>
+  <div id="a2-2" class="hidden"><h4>Ответ</h4><p>Свободный лист нужно <b>«раздвоить»</b>: продолжить его ветвями 0 и 1, получив два новых свободных места. Для трёх букв двух мест мало, поэтому один из двух новых листьев снова делим на два. В итоге из одного свободного префикса <i>p</i> получаем три кодовых слова: <span class="bits">p0</span>, <span class="bits">p10</span>, <span class="bits">p11</span> (или <span class="bits">p00</span>, <span class="bits">p01</span>, <span class="bits">p1</span>).</p><p>Пример: свободен префикс <span class="bits">11</span>, надо добавить Д, Е, Ж → Д = 110, Е = 1110, Ж = 1111. Сумма длин минимальна, если делить листья именно так, а не делать все три кода одинаково длинными (1100, 1101, 1110 — суммарно на 1 бит длиннее).</p></div>
+</section>
+
+<!-- ================= БЛОК 3 ================= -->
+<section class="block" id="b3">
+  <span class="block-num">Блок №3</span>
+  <h2>Кодовое дерево — главный инструмент задания 4</h2>
+  <p class="lead">Типичное условие ЕГЭ: «Имеются буквы А, Б, В, Г, Д с известными кодами первых четырёх. Подберите код пятой буквы так, чтобы сохранялась однозначность чтения сообщений». Для решения строят <b>кодовое дерево</b>.</p>
+  <div class="box rule"><div class="ttl">🌳 Идея дерева</div>Из корня выходят две ветви: влево — 0, вправо — 1. Путь от корня до узла — это двоичное слово. Буква ставится в узел, и её код равен пути до него. <b>Условие Фано выполняется тогда и только тогда, когда все буквы стоят в листьях</b> (в концах веток) — то есть ни через одну букву путь не продолжается дальше.</div>
+
+  <div class="steps">
+    <div><b>Корень.</b> Ставим точку сверху — начало дерева.</div>
+    <div><b>Две ветви.</b> Левая — всегда 0, правая — всегда 1.</div>
+    <div><b>Делим дальше.</b> От каждого нового узла снова ветви 0 и 1, пока в этом направлении есть буквы.</div>
+    <div><b>Расставляем буквы.</b> Путь от корня = код буквы. Свободные концы — места для новых букв.</div>
+  </div>
+  
+  <h3>Анимация: строим кодовое дерево слово за словом</h3>
+<p>Кодовые слова: A — 00, C — 010, D — 011, E — 1011, F — 1001, S — 1100, X — 1010, Y — 1101, Z — 111. Каждое слово добавляется по очереди: идём от корня по битам (влево — 0, вправо — 1), создавая недостающие узлы, и в конце пути ставим букву.</p>
+
+<div class="anim" id="fanoAnim">
+  <div class="anim-head">
+    <div class="anim-codes" id="animCodes"></div>
+    <div class="anim-ctrl">
+      <button class="btn" id="animPlay">▶ Запустить</button>
+      <button class="btn sec" id="animStep">⏭ Шаг</button>
+      <button class="btn sec" id="animReset">⟲ Сброс</button>
+      <label>Скорость
+        <select id="animSpeed">
+          <option value="1000">медленно</option>
+          <option value="550" selected>средняя</option>
+          <option value="220">быстро</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <div class="anim-status" id="animStatus">Нажмите «Запустить» или двигайтесь по шагам кнопкой «Шаг».</div>
+  <div class="tree" id="animTree"></div>
+</div>
+
+<h3>Анимация: строим кодовое дерево слово за словом</h3>
+<p>Кодовые слова: A — 00, C — 010, D — 011, E — 1011, F — 1001, S — 1100, X — 1010, Y — 1101, Z — 111. Каждое слово добавляется по очереди: идём от корня по битам (влево — 0, вправо — 1), создавая недостающие узлы, и в конце пути ставим букву.</p>
+
+<div class="anim" id="fanoAnim">
+  <div class="anim-head">
+    <div class="anim-codes" id="animCodes"></div>
+    <div class="anim-ctrl">
+      <button class="btn" id="animPlay">▶ Запустить</button>
+      <button class="btn sec" id="animStep">⏭ Шаг</button>
+      <button class="btn sec" id="animReset">⟲ Сброс</button>
+      <label>Скорость
+        <select id="animSpeed">
+          <option value="1000">медленно</option>
+          <option value="550" selected>средняя</option>
+          <option value="220">быстро</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <div class="anim-status" id="animStatus">Нажмите «Запустить» или двигайтесь по шагам кнопкой «Шаг».</div>
+  <div class="tree" id="animTree"></div>
+</div>
+
+<style>
+  .anim{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0;background:#fff}
+  .anim-head{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+  .anim-ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.9rem;color:var(--muted)}
+  .anim-ctrl select{padding:5px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:.9rem}
+  .anim-codes{display:flex;flex-wrap:wrap;gap:6px}
+  .anim-codes span{padding:5px 10px;border-radius:8px;border:1px solid var(--line);font-family:Consolas,"Courier New",monospace;font-weight:700;letter-spacing:.05em;background:#f7fafc;color:#a0aec0;transition:all .2s}
+  .anim-codes span.cur{background:var(--orange-l);border-color:var(--orange);color:var(--orange);transform:scale(1.06)}
+  .anim-codes span.done{background:var(--blue-l);border-color:var(--blue);color:var(--blue-d)}
+  .anim-codes span u{text-decoration:none;color:var(--orange);background:#fde68a;border-radius:3px}
+  .anim-status{margin:12px 0 4px;padding:10px 14px;border-radius:8px;background:var(--teal-l);color:var(--teal);font-weight:600;min-height:42px}
+  .anim-status.ok{background:var(--green-l);color:var(--green)}
+  .anim .tree{min-height:120px}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var CODES = [["A","00"],["C","010"],["D","011"],["E","1011"],["F","1001"],["S","1100"],["X","1010"],["Y","1101"],["Z","111"]];
+
+  var treeEl   = document.getElementById('animTree');
+  var codesEl  = document.getElementById('animCodes');
+  var statusEl = document.getElementById('animStatus');
+  var btnPlay  = document.getElementById('animPlay');
+  var btnStep  = document.getElementById('animStep');
+  var btnReset = document.getElementById('animReset');
+  var selSpeed = document.getElementById('animSpeed');
+  if (!treeEl) return;
+
+  /* ---------- Полное дерево (для фиксированной раскладки) ---------- */
+  var nodes = {};
+  function ensure(p) { if (!nodes[p]) nodes[p] = { code: p, ch: {}, label: '', free: false }; return nodes[p]; }
+  var root = ensure('');
+  CODES.forEach(function (c) {
+    var n = root, code = c[1];
+    for (var i = 0; i < code.length; i++) {
+      var m = ensure(code.slice(0, i + 1));
+      n.ch[code.charAt(i)] = m; n = m;
+    }
+    n.label = c[0];
+  });
+  /* свободные префиксы: у узла есть только одна ветвь */
+  Object.keys(nodes).forEach(function (p) {
+    var n = nodes[p];
+    if (n.ch['0'] || n.ch['1']) ['0', '1'].forEach(function (b) {
+      if (!n.ch[b]) { var m = ensure(p + b); m.free = true; n.ch[b] = m; }
+    });
+  });
+  var freeList = Object.keys(nodes).filter(function (p) { return nodes[p].free; });
+
+  var st = { leaf: 0, maxD: 0 };
+  (function layout(n, d) {
+    n.d = d; if (d > st.maxD) st.maxD = d;
+    var ks = ['0', '1'].filter(function (b) { return n.ch[b]; });
+    if (!ks.length) { n.x = st.leaf++; return; }
+    ks.forEach(function (b) { layout(n.ch[b], d + 1); });
+    n.x = ks.reduce(function (s, b) { return s + n.ch[b].x; }, 0) / ks.length;
+  })(root, 0);
+
+  var gap = 62, lh = 64, pad = 34;
+  var W = Math.max(st.leaf - 1, 0) * gap + pad * 2, H = st.maxD * lh + pad * 2;
+  function X(n) { return pad + n.x * gap; }
+  function Y(n) { return pad + n.d * lh; }
+
+  /* ---------- Шаги анимации ---------- */
+  var steps = [];
+  CODES.forEach(function (c, i) {
+    for (var k = 1; k <= c[1].length; k++) steps.push({ t: 'bit', i: i, p: c[1].slice(0, k) });
+    steps.push({ t: 'place', i: i });
+  });
+  steps.push({ t: 'free' });
+
+  var state, timer = null;
+
+  function reset() {
+    state = { pos: 0, revealed: { '': true }, placed: {}, active: null, just: null, cur: -1, consumed: 0, showFree: false };
+    stop();
+    statusEl.className = 'anim-status';
+    statusEl.textContent = 'Нажмите «Запустить» или двигайтесь по шагам кнопкой «Шаг».';
+    render();
+  }
+
+  function apply(s) {
+    var c = CODES[s.i];
+    state.just = null;
+    if (s.t === 'bit') {
+      state.revealed[s.p] = true; state.active = s.p; state.cur = s.i; state.consumed = s.p.length;
+      var bit = s.p.charAt(s.p.length - 1);
+      statusEl.className = 'anim-status';
+      statusEl.textContent = 'Слово ' + c[0] + ' = ' + c[1] + ': читаем бит «' + bit + '», идём ' +
+        (bit === '0' ? 'влево' : 'вправо') + ' → узел «' + s.p + '»' +
+        (s.p.length === c[1].length ? ' — это конец кода' : '');
+    } else if (s.t === 'place') {
+      state.placed[c[1]] = c[0]; state.just = c[1]; state.active = null; state.consumed = c[1].length;
+      statusEl.className = 'anim-status ok';
+      statusEl.textContent = 'Буква ' + c[0] + ' поставлена в лист «' + c[1] + '». Условие Фано соблюдено: через лист путь дальше не идёт.';
+    } else if (s.t === 'free') {
+      state.showFree = true; state.cur = -1; state.active = null;
+      statusEl.className = 'anim-status ok';
+      statusEl.textContent = 'Дерево построено! Все буквы — в листьях, код префиксный. Свободный префикс: ' +
+        freeList.map(function (p) { return '«' + p + '»'; }).join(', ') + ' — сюда можно добавить новую букву.';
+    }
+  }
+
+  function stepOnce() {
+    if (state.pos >= steps.length) { stop(); return false; }
+    apply(steps[state.pos++]);
+    render();
+    if (state.pos >= steps.length) stop();
+    return true;
+  }
+
+  function tick() {
+    if (!stepOnce()) return;
+    timer = setTimeout(tick, +selSpeed.value);
+  }
+  function play() { if (timer) return; if (state.pos >= steps.length) reset(); btnPlay.textContent = '⏸ Пауза'; timer = setTimeout(tick, 50); }
+  function stop() { if (timer) clearTimeout(timer); timer = null; btnPlay.textContent = '▶ Запустить'; }
+
+  /* ---------- Отрисовка ---------- */
+  function render() {
+    /* список кодовых слов */
+    var html = '';
+    CODES.forEach(function (c, i) {
+      var cls = state.placed[c[1]] ? 'done' : (i === state.cur ? 'cur' : '');
+      var bits = c[1];
+      if (i === state.cur && !state.placed[c[1]])
+        bits = '<u>' + c[1].slice(0, state.consumed) + '</u>' + c[1].slice(state.consumed);
+      html += '<span class="' + cls + '">' + c[0] + ' — ' + bits + '</span>';
+    });
+    codesEl.innerHTML = html;
+
+    /* дерево */
+    var s = '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H +
+            '" font-family="Segoe UI,Arial,sans-serif" font-size="14">';
+    function visible(n) { return n.free ? state.showFree : !!state.revealed[n.code]; }
+    function onPath(n) { return state.active !== null && state.active.indexOf(n.code) === 0 && n.code.length <= state.active.length; }
+
+    (function edges(n) {
+      ['0', '1'].forEach(function (b) {
+        var c = n.ch[b]; if (!c || !visible(c)) return;
+        var hot = onPath(c);
+        s += '<line x1="' + X(n) + '" y1="' + Y(n) + '" x2="' + X(c) + '" y2="' + Y(c) + '" stroke="' +
+             (c.free ? '#a0aec0' : hot ? '#dd6b20' : '#2b4c7e') + '" stroke-width="' + (hot ? 3 : 2) + '"' +
+             (c.free ? ' stroke-dasharray="5,4"' : '') + '/>';
+        s += '<text x="' + ((X(n) + X(c)) / 2 + (b === '0' ? -9 : 9)) + '" y="' + ((Y(n) + Y(c)) / 2 - 2) +
+             '" text-anchor="middle" fill="' + (hot ? '#dd6b20' : '#718096') + '" font-weight="700">' + b + '</text>';
+        edges(c);
+      });
+    })(root);
+
+    (function draw(n) {
+      if (!visible(n)) return;
+      var label = state.placed[n.code] || '';
+      var fill = '#fff', stroke = '#2b4c7e', txt = '#1a202c', r = 6;
+      if (n.free) { fill = '#f7fafc'; stroke = '#a0aec0'; r = 14; }
+      else if (state.just === n.code) { fill = '#f0fff4'; stroke = '#2f855a'; txt = '#2f855a'; r = 17; }
+      else if (label) { fill = '#e8eef7'; r = 17; }
+      else if (n.code === state.active) { fill = '#fffaf0'; stroke = '#dd6b20'; r = 10; }
+      else if (onPath(n)) { stroke = '#dd6b20'; }
+      s += '<circle cx="' + X(n) + '" cy="' + Y(n) + '" r="' + r + '" fill="' + fill + '" stroke="' + stroke +
+           '" stroke-width="2"' + (n.free ? ' stroke-dasharray="4,3"' : '') + '/>';
+      if (label) s += '<text x="' + X(n) + '" y="' + (Y(n) + 5) + '" text-anchor="middle" fill="' + txt + '" font-weight="800" font-size="15">' + label + '</text>';
+      if (n.free) s += '<text x="' + X(n) + '" y="' + (Y(n) + 5) + '" text-anchor="middle" fill="#718096" font-weight="700">?</text>';
+      if (label || n.free) s += '<text x="' + X(n) + '" y="' + (Y(n) + 30) + '" text-anchor="middle" fill="#718096" font-size="11" font-family="Consolas,monospace">' + n.code + '</text>';
+      ['0', '1'].forEach(function (b) { if (n.ch[b]) draw(n.ch[b]); });
+    })(root);
+
+    s += '</svg>';
+    treeEl.innerHTML = '<div class="tlegend">' +
+      '<span><i style="background:#fffaf0;border:2px solid #dd6b20"></i>текущий путь</span>' +
+      '<span><i style="background:#f0fff4;border:2px solid #2f855a"></i>только что поставлена</span>' +
+      '<span><i style="background:#e8eef7;border:2px solid #2b4c7e"></i>буква</span>' +
+      '<span><i style="background:#f7fafc;border:2px dashed #a0aec0"></i>свободный префикс</span></div>' + s;
+  }
+
+  btnPlay.addEventListener('click', function () { timer ? stop() : play(); });
+  btnStep.addEventListener('click', function () { stop(); stepOnce(); });
+  btnReset.addEventListener('click', reset);
+  reset();
+})();
+</script>
+<details class="spoiler">
+  <summary>Пример 3.1. Один свободный лист</summary>
+  <div class="two">
+    <div>
+      <table><tr><th>Буква</th><th>Код</th></tr><tr><td>А</td><td class="bits">11</td></tr><tr><td>Б</td><td class="bits">100</td></tr><tr><td>В</td><td class="bits">101</td></tr><tr><td>Г</td><td class="bits">01</td></tr><tr><td>Д</td><td>?</td></tr></table>
+      <p>Куда поставить Д нельзя: «продолжать» готовый код другой буквы (например, Д = 111 — это код А с добавленной цифрой). Букву можно поставить только в <b>свободный лист</b>. Он один — код <span class="bits">00</span>.</p>
+    </div>
+    <div class="tree" data-codes='[["А","11"],["Б","100"],["В","101"],["Г","01"],["Д","00"]]' data-new='["Д"]'></div>
+  </div>
+  <div class="box good"><div class="ttl">✅ Ответ</div>Д = <span class="bits">00</span>. Она не помешает другим буквам и сама не станет началом никакой другой.</div>
+</details>
+<details class="spoiler">
+  <summary>Пример 3.2. Один свободный лист, но две новые буквы</summary>
+  <div class="two">
+    <div>
+      <table><tr><th>Буква</th><th>Код</th></tr><tr><td>А</td><td class="bits">100</td></tr><tr><td>Б</td><td class="bits">01</td></tr><tr><td>В</td><td class="bits">00</td></tr><tr><td>Г</td><td class="bits">11</td></tr><tr><td>Д</td><td>?</td></tr><tr><td>Е</td><td>?</td></tr></table>
+      <p>Свободна всего одна позиция — префикс <span class="bits">101</span>. Но букв две. Делим этот лист ещё на две ветви: получаем <span class="bits">1010</span> и <span class="bits">1011</span>. Какую из них отдать Д, а какую Е — в этой постановке неважно: суммарная длина кодов одинакова.</p>
+    </div>
+    <div class="tree" data-codes='[["А","100"],["Б","01"],["В","00"],["Г","11"],["Д","1010"],["Е","1011"]]' data-new='["Д","Е"]'></div>
+  </div>
+</details>
+<details class="spoiler">
+  <summary>Пример 3.3. Несколько свободных префиксов (большой алфавит)</summary>
+  <p>Необходимо, соблюдая прямое условие Фано, подобрать код для буквы Р при известных кодах остальных:</p>
+  <table>
+    <tr><th>Б</th><th>О</th><th>Г</th><th>Т</th><th>С</th><th>П</th><th>А</th><th>Д</th><th>В</th><th>Р</th></tr>
+    <tr><td class="bits">001</td><td class="bits">101</td><td class="bits">0100</td><td class="bits">0101</td><td class="bits">0110</td><td class="bits">0111</td><td class="bits">1101</td><td class="bits">1110</td><td class="bits">1111</td><td>?</td></tr>
+  </table>
+  <p>Рассуждаем по уровням. Ветви <span class="bits">0</span> и <span class="bits">1</span> — кодовых слов такой длины нет, продлеваем. Префиксы <span class="bits">00, 01, 10, 11</span> — каждый является началом какого-то кода, продлеваем до длины 3. <span class="bits">001</span> — Б, <span class="bits">101</span> — О; <span class="bits">000</span> и <span class="bits">100</span> ни с чем не связаны — <b>свободны</b>. На длине 4: <span class="bits">0100</span>–<span class="bits">0111</span> заняты Г, Т, С, П; <span class="bits">1101</span> — А, <span class="bits">1110</span> — Д, <span class="bits">1111</span> — В; <span class="bits">1100</span> — <b>свободен</b>.</p>
+  <div class="tree" data-codes='[["Б","001"],["О","101"],["Г","0100"],["Т","0101"],["С","0110"],["П","0111"],["А","1101"],["Д","1110"],["В","1111"]]'></div>
+  <p class="tree-cap">Пунктиром показаны свободные префиксы: 000, 100 и 1100</p>
+  <div class="box good"><div class="ttl">✅ Ответ</div>В нашем распоряжении три префикса — <span class="bits">000</span>, <span class="bits">100</span>, <span class="bits">1100</span>. Любой из них можно взять как код буквы Р или как начало такого кода. Если в задаче просят <b>кратчайший</b> код — выбираем 000 или 100; если «кратчайший с наименьшим числовым значением» — <span class="bits">000</span>.</div>
+</details>
+  <h3>Приём для обратного условия Фано</h3>
+  <div class="box note"><div class="ttl">🔁 Переворачиваем коды</div>Если в задаче требуется обратное условие Фано, <b>запишите все коды задом наперёд</b>, постройте обычное дерево и найдите свободные префиксы, а затем переверните найденный код обратно. Пример: А = 1, Б = 00, В = 010 (обратное условие выполнено). Перевёрнутые коды: 1, 00, 010. Свободен префикс <span class="bits">011</span>; перевернув его, получаем код <span class="bits">110</span> для новой буквы. Проверка: 110 не оканчивается на 1? Оканчивается на 0; на 00? нет — «10»; на 010? нет. ✔</div>
+</section>
+
+<!-- ================= БЛОК 4 ================= -->
+<section class="block" id="b4">
+  <span class="block-num">Блок №4</span>
+  <h2>Классические задачи ЕГЭ с разбором</h2>
+
+  <div class="task"><span class="tn">Задача 1 · кратчайший код для новой буквы</span>
+    <div class="cond">Для кодирования букв А, Б, В, Г, Д решили использовать неравномерный двоичный код, удовлетворяющий условию Фано: А — 0, Б — 10, В — 110, Г — 1110. Укажите кратчайшее кодовое слово для буквы Д.</div>
+<details class="spoiler">
+	<summary>Решение</summary>
+    <p>Строим дерево: каждая буква «отщипывает» одну ветвь, вторая ветвь продолжается дальше. После Г (1110) свободным остаётся только префикс <span class="bits">1111</span>.</p>
+    <div class="tree" data-codes='[["А","0"],["Б","10"],["В","110"],["Г","1110"],["Д","1111"]]' data-new='["Д"]'></div>
+    <p>Ответ: <span class="ans">1111</span></p>
+</details>
+  </div>
+  <div class="task"><span class="tn">Задача 2 · несколько свободных мест, выбрать кратчайшее</span>
+    <div class="cond">По каналу связи передаются сообщения из букв А, Б, В, Г. Для А — 00, Б — 01, В — 100. Укажите кратчайшее кодовое слово для Г, при котором код удовлетворяет условию Фано. Если таких слов несколько, укажите то, у которого меньше числовое значение.</div>
+<details class="spoiler">
+	<summary>Решение</summary>
+    <p>Свободны префиксы <span class="bits">11</span> (длина 2) и <span class="bits">101</span> (длина 3). Кратчайший — <span class="bits">11</span>.</p>
+    <div class="tree" data-codes='[["А","00"],["Б","01"],["В","100"],["Г","11"]]' data-new='["Г"]'></div>
+    <p>Ответ: <span class="ans">11</span></p>
+</details>
+  </div>
+  <div class="task"><span class="tn">Задача 3 · наименьшая сумма длин кодовых слов</span>
+    <div class="cond">Для кодирования последовательности из букв А, Б, В, Г, Д, Е используется неравномерный код, удовлетворяющий условию Фано. Для А использовано слово 0, для Б — 10. Какова наименьшая возможная сумма длин всех шести кодовых слов?</div>
+<details class="spoiler">
+	<summary>Решение</summary>
+    <p>После А и Б свободен единственный префикс <span class="bits">11</span>. Четыре буквы нужно «повесить» под ним как можно ближе к корню — два деления дают ровно 4 листа: <span class="bits">1100, 1101, 1110, 1111</span>.</p>
+    <div class="tree" data-codes='[["А","0"],["Б","10"],["В","1100"],["Г","1101"],["Д","1110"],["Е","1111"]]' data-new='["В","Г","Д","Е"]'></div>
+    <p>Сумма: 1 + 2 + 4 + 4 + 4 + 4 = <span class="ans">19</span></p>
+    <div class="box warn"><div class="ttl">⚠️ Типичная ошибка</div>Сделать «цепочку» В = 110, Г = 1110, Д = 11110, Е = 11111: сумма 1+2+3+4+5+5 = 20. Это тоже корректный код, но не с наименьшей суммой. Чем «ровнее» заполняется поддерево, тем меньше сумма длин.</div>
+  </details>
+  </div>
+
+  <div class="task"><span class="tn">Задача 4 · обратное условие Фано</span>
+    <div class="cond">Сообщение состоит из букв А, Б, В, Г, Д. А — 1, Б — 00, В — 010. Для Г и Д нужно подобрать коды так, чтобы выполнялось <b>обратное</b> условие Фано и сумма длин всех кодов была наименьшей. Чему равна эта сумма?</div>
+<details class="spoiler">
+	<summary>Решение</summary>
+    <p>Переворачиваем коды: А — 1, Б — 00, В — 010. Строим дерево: свободен один префикс <span class="bits">011</span>. Делим его: <span class="bits">0110</span> и <span class="bits">0111</span>. Переворачиваем обратно: Г = <span class="bits">0110</span>, Д = <span class="bits">1110</span>. Проверяем окончания: ни один код не является концом другого. ✔</p>
+    <p>Сумма: 1 + 2 + 3 + 4 + 4 = <span class="ans">14</span></p>
+  </details>
+  </div>
+
+  <div class="task"><span class="tn">Задача 5 · декодирование сообщения</span>
+    <div class="cond">Для букв А, Б, В, Г используются коды: А — 0, Б — 10, В — 110, Г — 111. Расшифруйте сообщение <span class="bits">0101111100</span>.</div>
+<details class="spoiler">
+	<summary>Решение</summary>
+    <p>Код префиксный — читаем слева направо, останавливаясь, как только набрали код:<br><span class="bits">0</span> → А, <span class="bits">10</span> → Б, <span class="bits">111</span> → Г, <span class="bits">110</span> → В, <span class="bits">0</span> → А.</p>
+    <p>Ответ: <span class="ans">АБГВА</span></p>
+</details>
+  </div>
+  <div class="task"><span class="tn">Задача 6 · выбор из предложенных вариантов</span>
+    <div class="cond">Коды: А — 00, Б — 010, В — 011, Г — 10, Д — 110. Какое из слов можно использовать для буквы Е, чтобы код удовлетворял условию Фано: 1) 1; 2) 11; 3) 111; 4) 1101?</div>
+<details class="spoiler">
+	<summary>Решение</summary>
+    <p>Свободный префикс только один — <span class="bits">111</span>. Варианты «1» и «11» — начала существующих кодов; «1101» — продолжение кода Д.</p>
+    <div class="tree" data-codes='[["А","00"],["Б","010"],["В","011"],["Г","10"],["Д","110"],["Е","111"]]' data-new='["Е"]'></div>
+    <p>Ответ: <span class="ans">3) 111</span></p>
+	</details>
+  </div>
+
+  <div class="task"><span class="tn">Задача 7 · минимальная длина сообщения</span>
+    <div class="cond">Сообщение содержит 20 букв А, 10 букв Б, 5 букв В и 5 букв Г. Используется неравномерный код, удовлетворяющий условию Фано. Какова наименьшая возможная длина сообщения в битах?</div>
+<details class="spoiler">
+	<summary>Решение</summary>
+    <p>Самой частой букве — самый короткий код: А = 0, Б = 10, В = 110, Г = 111.</p>
+    <p>20·1 + 10·2 + 5·3 + 5·3 = <span class="ans">70 бит</span> (для сравнения: равномерный 2-битный код дал бы 80 бит).</p>
+	</details>
+  </div>
+</section>
+
+<!-- ================= БЛОК 5 ================= -->
+<section class="block" id="b5">
+  <span class="block-num">Блок №5</span>
+  <h2>Эффективность: разные деревья для одного алфавита</h2>
+  <p class="lead">Условие Фано гарантирует только однозначность, но ничего не говорит об экономичности. Для одного и того же набора букв можно построить много разных префиксных деревьев, и длина закодированного сообщения будет сильно различаться.</p>
+
+<details class="spoiler">
+	<summary>Эксперимент. 4 буквы, 20 символов в сообщении</summary>
+  <p>Частоты: А — 10, Б — 5, В — 3, Г — 2.</p>
+  <div class="two">
+    <div>
+      <h4>Дерево 1 — «ровное» (равномерный код)</h4>
+      <div class="tree" data-codes='[["А","00"],["Б","01"],["В","10"],["Г","11"]]'></div>
+      <p>10·2 + 5·2 + 3·2 + 2·2 = <b>40 бит</b></p>
+    </div>
+    <div>
+      <h4>Дерево 2 — «лесенка» по убыванию частот</h4>
+      <div class="tree" data-codes='[["А","0"],["Б","10"],["В","110"],["Г","111"]]'></div>
+      <p>10·1 + 5·2 + 3·3 + 2·3 = <b>35 бит</b> <span class="pill g">лучший</span></p>
+    </div>
+    <div>
+      <h4>Дерево 3 — та же «лесенка», но перевёрнутая</h4>
+      <div class="tree" data-codes='[["Г","0"],["В","10"],["Б","110"],["А","111"]]'></div>
+      <p>2·1 + 3·2 + 5·3 + 10·3 = <b>53 бита</b> <span class="pill r">хуже равномерного!</span></p>
+    </div>
+    <div>
+      <h4>Дерево 4 — другая форма, та же эффективность</h4>
+      <div class="tree" data-codes='[["А","0"],["Б","11"],["В","100"],["Г","101"]]'></div>
+      <p>10·1 + 5·2 + 3·3 + 2·3 = <b>35 бит</b> <span class="pill g">лучший</span></p>
+    </div>
+  </div>
+  <div class="bars">
+    <div class="bar"><span>Дерево 3</span><div class="fill bad" style="width:100%"></div><span class="n">53</span></div>
+    <div class="bar"><span>Дерево 1</span><div class="fill mid" style="width:75%"></div><span class="n">40</span></div>
+    <div class="bar"><span>Дерево 2</span><div class="fill good" style="width:66%"></div><span class="n">35</span></div>
+    <div class="bar"><span>Дерево 4</span><div class="fill good" style="width:66%"></div><span class="n">35</span></div>
+  </div>
+  <div class="box idea"><div class="ttl">💡 Три вывода</div>
+    <ol>
+      <li>Форма дерева задаёт <b>набор длин</b> кодов; одинаковые наборы длин (1, 2, 3, 3) дают одинаковую эффективность независимо от формы.</li>
+      <li>Неравномерный код выигрывает <b>только</b> если короткие коды достаются частым буквам. Перепутали — получите хуже, чем равномерный код.</li>
+      <li>Чем сильнее различаются частоты, тем больше выигрыш от «лесенки»; при равных частотах выгоднее «ровное» дерево.</li>
+    </ol>
+  </div>
+</details>
+<details class="spoiler">
+	<summary>Эксперимент 2. 5 букв, 100 символов</summary>
+  <p>Частоты: А — 40, Б — 20, В — 15, Г — 15, Д — 10. Сравним четыре дерева:</p>
+  <table>
+    <tr><th class="l">Вариант</th><th>А (40)</th><th>Б (20)</th><th>В (15)</th><th>Г (15)</th><th>Д (10)</th><th>Всего бит</th><th>Бит/символ</th></tr>
+    <tr><td class="l">Равномерный 3-битный</td><td class="bits">000</td><td class="bits">001</td><td class="bits">010</td><td class="bits">011</td><td class="bits">100</td><td>300</td><td>3,00</td></tr>
+    <tr><td class="l">Лесенка</td><td class="bits">0</td><td class="bits">10</td><td class="bits">110</td><td class="bits">1110</td><td class="bits">1111</td><td>225</td><td>2,25</td></tr>
+    <tr><td class="l">Два коротких</td><td class="bits">00</td><td class="bits">01</td><td class="bits">10</td><td class="bits">110</td><td class="bits">111</td><td>225</td><td>2,25</td></tr>
+    <tr class="tot"><td class="l">Дерево Хаффмана</td><td class="bits">0</td><td class="bits">111</td><td class="bits">100</td><td class="bits">110</td><td class="bits">101</td><td>220</td><td>2,20</td></tr>
+  </table>
+  <div class="tree" data-codes='[["А","0"],["В","100"],["Д","101"],["Г","110"],["Б","111"]]'></div>
+  <p class="tree-cap">Оптимальное дерево Хаффмана: одна буква на глубине 1, четыре — на глубине 3</p>
+  <div class="box note"><div class="ttl">🏆 Как найти лучшее дерево: алгоритм Хаффмана</div>Берём две <b>самые редкие</b> буквы, объединяем их в один узел с суммарной частотой, повторяем, пока не останется один узел — корень. В примере: Д(10)+В(15)=25; Г(15)+Б(20)=35; 25+35=60; А(40)+60=100. Путь от корня — код. Этот метод даёт префиксный код минимальной средней длины; именно так работают архиваторы. В задании 4 ЕГЭ он обычно не нужен, но полезно понимать, откуда берётся «идеальное» дерево.</div>
+  </details>
+</section>
+
+<!-- ================= БЛОК 6 ================= -->
+<section class="block" id="b6">
+  <span class="block-num">Блок №6</span>
+  <h2>Шпаргалка, тренажёр и задачи для самопроверки</h2>
+  <div class="cards">
+    <div class="card c1"><div class="ico">1️⃣</div><b>Прямое условие Фано</b>Ни один код — не начало другого. Читаем слева направо. Дерево: все буквы в листьях.</div>
+    <div class="card c5"><div class="ico">2️⃣</div><b>Обратное условие Фано</b>Ни один код — не конец другого. Читаем справа налево. Приём: перевернуть коды, построить дерево, перевернуть ответ.</div>
+    <div class="card c2"><div class="ico">3️⃣</div><b>Новая буква</b>Только в свободный лист или его продолжение. Нельзя ставить на путь к существующей букве и нельзя продолжать существующую букву.</div>
+    <div class="card c3"><div class="ico">4️⃣</div><b>Кратчайший код</b>Самый короткий свободный префикс; при равной длине — с меньшим числовым значением (если так сказано в условии).</div>
+    <div class="card c4"><div class="ico">5️⃣</div><b>Минимальная сумма длин</b>Несколько букв под одним префиксом размещаем максимально «ровно», а не цепочкой.</div>
+    <div class="card c1"><div class="ico">6️⃣</div><b>Минимальная длина сообщения</b>Частые буквы — короткие коды, редкие — длинные; при расчёте умножаем частоту на длину.</div>
+  </div>
+
+  <h3>🧪 Мини-тренажёр: проверь свой код</h3>
+  <p>Введите таблицу кодов — по одной букве в строке в формате <code>Буква код</code>. Страница проверит прямое и обратное условие Фано и нарисует дерево.</p>
+  <textarea id="trInput">А 0
+Б 10
+В 110
+Г 111</textarea>
+  <p><button class="btn" id="trBtn">Проверить и построить дерево</button> <button class="btn sec" id="trSample">Пример с нарушением</button></p>
+  <div id="trRes"></div>
+  <div class="tree" id="trTree" style="display:none"></div>
+
+  <h3>📝 Задачи для самопроверки</h3>
+  <div class="qs">
+    <h4>Решите, затем откройте ответ</h4>
+    <div class="q"><p><b>1.</b> А — 00, Б — 01, В — 11. Укажите кратчайшее кодовое слово для Г (прямое условие Фано). Если их несколько — с наименьшим числовым значением.</p><button class="btn" data-answer="a6-1">Ответ</button></div>
+    <div class="q"><p><b>2.</b> А — 0, Б — 100, В — 101. Нужно добавить буквы Г, Д, Е. Какова наименьшая возможная сумма длин всех шести кодовых слов?</p><button class="btn" data-answer="a6-2">Ответ</button></div>
+    <div class="q"><p><b>3.</b> Коды А — 1, Б — 01, В — 001, Г — 0001. Выполняется ли прямое условие Фано? Обратное? Расшифруйте <span class="bits">0011001</span>.</p><button class="btn" data-answer="a6-3">Ответ</button></div>
+    <div class="q"><p><b>4.</b> Сообщение: 16 букв А, 8 букв Б, 4 буквы В, 2 буквы Г, 2 буквы Д. Какова наименьшая длина сообщения в битах при коде, удовлетворяющем условию Фано? Насколько это меньше равномерного кода?</p><button class="btn" data-answer="a6-4">Ответ</button></div>
+  </div>
+  <div id="a6-1" class="hidden"><h4>Ответ: 10</h4><p>Свободен только префикс <span class="bits">10</span> (ветвь 1 → 0). Код длины 2, единственный, он же и есть ответ.</p></div>
+  <div id="a6-2" class="hidden"><h4>Ответ: 18</h4><p>Свободен один префикс — <span class="bits">11</span>. Три буквы под ним размещаем как <span class="bits">110</span>, <span class="bits">1110</span>, <span class="bits">1111</span> (длины 3, 4, 4). Сумма: 1 + 3 + 3 + 3 + 4 + 4 = <b>18</b>. «Ровный» вариант 1100, 1101, 1110 хуже: 1 + 3 + 3 + 4 + 4 + 4 = 19.</p></div>
+  <div id="a6-3" class="hidden"><h4>Ответ</h4><p><b>Прямое условие выполняется</b>: 1 не начало 01, 001, 0001; 01 не начало 001, 0001; 001 не начало 0001 (начало — «000»). <b>Обратное нарушено</b>: 1 — окончание всех остальных кодов.</p><p>Читаем слева направо: <span class="bits">001</span> → В, <span class="bits">1</span> → А, <span class="bits">001</span> → В. Ответ: <b>ВАВ</b>.</p></div>
+  <div id="a6-4" class="hidden"><h4>Ответ: 60 бит, экономия 36 бит</h4><p>Код по частотам: А = 0, Б = 10, В = 110, Г = 1110, Д = 1111. Длина: 16·1 + 8·2 + 4·3 + 2·4 + 2·4 = 16 + 16 + 12 + 8 + 8 = <b>60 бит</b>. Проверка по Хаффману: Г(2)+Д(2)=4; 4+В(4)=8; 8+Б(8)=16; 16+А(16)=32 — та же «лесенка», значит это оптимум. Равномерный код для 5 букв — 3 бита: 32·3 = 96 бит. Экономия: 96 − 60 = <b>36 бит</b> (37,5 %).</p></div>
+</section>
+
+</main>
+<footer>Конспект занятия · Задание 4 ЕГЭ по информатике · Неравномерное кодирование и условие Фано</footer>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg"><div class="modal"><button class="x" id="modalX">×</button><div id="modalBody"></div></div></div>
+
+<script>
+/* ---------- Кодовое дерево (SVG) ---------- */
+function buildTrie(codes){
+  const root={ch:{},label:'',code:'',free:false};
+  for(const [l,c] of codes){let n=root;for(const b of c){if(!n.ch[b])n.ch[b]={ch:{},label:'',code:n.code+b,free:false};n=n.ch[b];}n.label=n.label?n.label+','+l:l;}
+  return root;
+}
+function addFree(n){
+  const keys=Object.keys(n.ch);
+  if(keys.length){for(const b of ['0','1']){if(!n.ch[b])n.ch[b]={ch:{},label:'',code:n.code+b,free:true};}}
+  for(const b of ['0','1'])if(n.ch[b]&&!n.ch[b].free)addFree(n.ch[b]);
+}
+function renderTree(el){
+  let codes;try{codes=JSON.parse(el.dataset.codes);}catch(e){return;}
+  const newL=el.dataset.new?JSON.parse(el.dataset.new):[], badL=el.dataset.bad?JSON.parse(el.dataset.bad):[];
+  const root=buildTrie(codes);addFree(root);
+  let leafIdx=0,maxD=0;
+  (function layout(n,d){n.d=d;maxD=Math.max(maxD,d);const ks=['0','1'].filter(b=>n.ch[b]);
+    if(!ks.length){n.x=leafIdx++;return;}ks.forEach(b=>layout(n.ch[b],d+1));n.x=ks.reduce((s,b)=>s+n.ch[b].x,0)/ks.length;})(root,0);
+  const gap=64,lh=64,pad=34,W=Math.max(leafIdx-1,0)*gap+pad*2,H=maxD*lh+pad*2;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="Segoe UI,Arial" font-size="14">`;
+  const X=n=>pad+n.x*gap,Y=n=>pad+n.d*lh;
+  (function draw(n){for(const b of ['0','1']){const c=n.ch[b];if(!c)continue;
+    s+=`<line x1="${X(n)}" y1="${Y(n)}" x2="${X(c)}" y2="${Y(c)}" stroke="${c.free?'#a0aec0':'#2b4c7e'}" stroke-width="2" ${c.free?'stroke-dasharray="5,4"':''}/>`;
+    s+=`<text x="${(X(n)+X(c))/2+(b==='0'?-9:9)}" y="${(Y(n)+Y(c))/2-2}" text-anchor="middle" fill="#718096" font-weight="700">${b}</text>`;draw(c);}})(root);
+  (function nodes(n){
+    const isLeaf=!Object.keys(n.ch).length;let fill='#fff',stroke='#2b4c7e',txt='#1a202c';
+    const isBad=n.label&&badL.some(x=>n.label.split(',').includes(x)), isNew=n.label&&newL.some(x=>n.label.split(',').includes(x));
+    if(n.free){fill='#f7fafc';stroke='#a0aec0';}
+    else if(isBad||(n.label&&!isLeaf)){fill='#fff5f5';stroke='#c53030';txt='#c53030';}
+    else if(isNew){fill='#f0fff4';stroke='#2f855a';txt='#2f855a';}
+    else if(n.label){fill='#e8eef7';}
+    const r=n.label?17:(n.free?14:6);
+    s+=`<circle cx="${X(n)}" cy="${Y(n)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="2" ${n.free?'stroke-dasharray="4,3"':''}/>`;
+    if(n.label)s+=`<text x="${X(n)}" y="${Y(n)+5}" text-anchor="middle" fill="${txt}" font-weight="800" font-size="15">${n.label}</text>`;
+    if(n.free){s+=`<text x="${X(n)}" y="${Y(n)+5}" text-anchor="middle" fill="#718096" font-weight="700">?</text>`;
+      s+=`<text x="${X(n)}" y="${Y(n)+30}" text-an      s+=`<text x="${X(n)}" y="${Y(n)+30}" text-anchor="middle" fill="#718096" font-size="11" font-family="Consolas,monospace">${n.code}</text>`;}
+    else if(n.label&&isLeaf){s+=`<text x="${X(n)}" y="${Y(n)+30}" text-anchor="middle" fill="#718096" font-size="11" font-family="Consolas,monospace">${n.code}</text>`;}
+    for(const b of ['0','1'])if(n.ch[b])nodes(n.ch[b]);
+  })(root);
+  s+='</svg>';
+  el.innerHTML=`<div class="tlegend"><span><i style="background:#e8eef7;border:2px solid #2b4c7e"></i>буква</span><span><i style="background:#f0fff4;border:2px solid #2f855a"></i>новая буква</span><span><i style="background:#fff5f5;border:2px solid #c53030"></i>нарушение</span><span><i style="background:#f7fafc;border:2px dashed #a0aec0"></i>свободный префикс</span></div>`+s;
+}
+document.querySelectorAll('.tree[data-codes]').forEach(renderTree);
+
+/* ---------- Всплывающие окна с ответами ---------- */
+const bg=document.getElementById('modalBg'),mbody=document.getElementById('modalBody');
+document.querySelectorAll('[data-answer]').forEach(b=>b.addEventListener('click',()=>{
+  const src=document.getElementById(b.dataset.answer);if(!src)return;
+  mbody.innerHTML=src.innerHTML;bg.classList.add('open');
+}));
+function closeM(){bg.classList.remove('open');}
+document.getElementById('modalX').onclick=closeM;
+bg.addEventListener('click',e=>{if(e.target===bg)closeM();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
+
+/* ---------- Мини-тренажёр ---------- */
+function parseCodes(t){
+  const out=[],errs=[];
+  t.split('\n').forEach((line,i)=>{
+    line=line.trim();if(!line)return;
+    const m=line.match(/^([^\s=:—-]+)\s*[=:—-]?\s*([01]+)$/);
+    if(!m){errs.push('Строка '+(i+1)+': ожидается «Буква код», код — только из 0 и 1');return;}
+    out.push([m[1],m[2]]);
+  });
+  return{out,errs};
+}
+function checkFano(codes){
+  const direct=[],rev=[],bad=new Set();
+  for(let i=0;i<codes.length;i++)for(let j=0;j<codes.length;j++){
+    if(i===j)continue;const [la,a]=codes[i],[lb,b]=codes[j];
+    if(a===b){if(i<j){direct.push(`${la} и ${lb} имеют одинаковый код «${a}»`);rev.push(`${la} и ${lb} имеют одинаковый код «${a}»`);bad.add(lb);}continue;}
+    if(b.startsWith(a)){direct.push(`«${a}» (${la}) — начало «${b}» (${lb})`);bad.add(lb);}
+    if(b.endsWith(a))rev.push(`«${a}» (${la}) — окончание «${b}» (${lb})`);
+  }
+  return{direct,rev,bad:[...bad]};
+}
+document.getElementById('trBtn').onclick=()=>{
+  const {out,errs}=parseCodes(document.getElementById('trInput').value);
+  const res=document.getElementById('trRes'),tree=document.getElementById('trTree');
+  if(errs.length||!out.length){res.innerHTML=`<div class="res no">${errs.join('<br>')||'Введите хотя бы один код'}</div>`;tree.style.display='none';return;}
+  const {direct,rev,bad}=checkFano(out);let html='';
+  html+=direct.length?`<div class="res no">❌ Прямое условие Фано нарушено:<br>${[...new Set(direct)].join('<br>')}</div>`:`<div class="res ok">✅ Прямое условие Фано выполняется — сообщение читается слева направо</div>`;
+  html+=rev.length?`<div class="res no">❌ Обратное условие Фано нарушено:<br>${[...new Set(rev)].join('<br>')}</div>`:`<div class="res ok">✅ Обратное условие Фано выполняется — сообщение читается справа налево</div>`;
+  if(!direct.length&&!rev.length)html+=`<div class="res ok">🏆 Код однозначно декодируется в обе стороны</div>`;
+  if(direct.length&&rev.length)html+=`<div class="res no">⚠️ Нарушены оба условия — такой код, скорее всего, декодируется неоднозначно</div>`;
+  const sum=out.reduce((s,c)=>s+c[1].length,0);
+  html+=`<p>Количество кодовых слов: <b>${out.length}</b>, сумма длин: <b>${sum}</b>, средняя длина: <b>${(sum/out.length).toFixed(2)}</b></p>`;
+  res.innerHTML=html;
+  tree.dataset.codes=JSON.stringify(out);tree.dataset.bad=JSON.stringify(bad);tree.dataset.new='[]';
+  tree.style.display='';renderTree(tree);
+};
+document.getElementById('trSample').onclick=()=>{
+  document.getElementById('trInput').value='А 00\nБ 100\nВ 101\nГ 11\nД 1000';
+  document.getElementById('trBtn').click();
+};
+</script>
+</body>
+</html>
